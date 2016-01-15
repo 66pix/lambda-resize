@@ -1,0 +1,29 @@
+{
+  "name": "lamda-resize",
+  "version": "1.0.0",
+  "description": "Resize images and put them in a matching directory on the given bucket, suffixing them with the resized width",
+  "repository": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "lab --lint --coverage",
+    "lint": "node_modules/.bin/eslint --ignore-path .gitignore .",
+    "precommit": "npm run lint && npm run test && npm run coverage-average"
+  },
+  "author": "Michael Robinson <michael.robinson@66pix.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "aws-sdk": "^2.2.30",
+    "bluebird": "^3.1.1",
+    "filename.js": "^1.0.5",
+    "gm": "^1.21.1"
+  },
+  "devDependencies": {
+    "code": "^2.1.0",
+    "coverage-average": "^1.0.4",
+    "eslint": "^1.10.3",
+    "husky": "^0.10.2",
+    "lab": "^8.0.2",
+    "local-node-lambda": "0.0.1",
+    "sinon": "^1.17.2"
+  }
+}

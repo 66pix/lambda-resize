@@ -1,0 +1,8 @@
+# Files
+.env
+deploy.env
+event.json
+npm-debug.log
+
+# Directories
+node_modules/*
