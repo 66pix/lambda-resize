@@ -6,9 +6,11 @@ var lab = exports.lab = Lab.script();
 var expect = Code.expect;
 var sinon = require('sinon');
 var fs = require('fs');
+var path = require('path');
 var s3 = require('../s3.js');
+var Promise = require('bluebird');
 
-lab.experiment('lambda resize', function() {
+lab.experiment('index', function() {
 
   function getConfig() {
     return config;
@@ -35,7 +37,8 @@ lab.experiment('lambda resize', function() {
         {
           s3: {
             object: {
-              key: ''
+              key: '',
+              size: 1024
             },
             bucket: {
               name: ''
@@ -46,7 +49,13 @@ lab.experiment('lambda resize', function() {
     };
 
     config = {
-      destinationBucket: 'destination-bucket'
+      destinationBucket: 'destination-bucket',
+      sizes: [
+        88,
+        100,
+        1024,
+        2048
+      ]
     };
 
     done();
@@ -54,6 +63,18 @@ lab.experiment('lambda resize', function() {
 
   lab.afterEach(function(done) {
     fs.readFile.restore();
+    done();
+  });
+
+  lab.it('should fail if the image has a 0 size', function(done) {
+    sinon.spy(context, 'fail');
+    event.Records[0].s3.object.size = 0;
+
+    imageResize.handler(event, context);
+
+    expect(context.fail.calledOnce).to.equal(true);
+    expect(context.fail.calledWith('Object size is 0')).to.equal(true);
+    context.fail.restore();
     done();
   });
 
@@ -65,18 +86,6 @@ lab.experiment('lambda resize', function() {
 
     expect(context.fail.calledOnce).to.equal(true);
     expect(context.fail.calledWith('Resize images function will not run for files at the bucket root')).to.equal(true);
-    context.fail.restore();
-    done();
-  });
-
-  lab.it('should fail if called with something that is not png, jpg, jpeg or gif', function(done) {
-    sinon.spy(context, 'fail');
-    event.Records[0].s3.object.key = 'some/path/file.txt';
-
-    imageResize.handler(event, context);
-
-    expect(context.fail.calledOnce).to.equal(true);
-    expect(context.fail.calledWith('txt is not one of jpg, jpeg, gif, png')).to.equal(true);
     context.fail.restore();
     done();
   });
@@ -110,7 +119,35 @@ lab.experiment('lambda resize', function() {
     sinon.spy(context, 'fail');
     imageResize.handler(event, context)
     .finally(function() {
-      expect(context.fail.calledWith('Destination bucket must be provided')).to.equal(true);
+      expect(context.fail.calledWith('Config must provide a destinationBucket')).to.equal(true);
+      context.fail.restore();
+      done();
+    });
+  });
+
+  lab.it('should fail if there is no sizes array', function(done) {
+    config.sizes = false;
+    event.Records[0].s3.object.key = 'some/path/file.jpg';
+    event.Records[0].s3.bucket.name = 'source-bucket';
+
+    sinon.spy(context, 'fail');
+    imageResize.handler(event, context)
+    .finally(function() {
+      expect(context.fail.calledWith('Config must contain an array of widths to resize images to')).to.equal(true);
+      context.fail.restore();
+      done();
+    });
+  });
+
+  lab.it('should fail if the sizes array contains no integers', function(done) {
+    config.sizes = ['this is not a number', 'nor is this'];
+    event.Records[0].s3.object.key = 'some/path/file.jpg';
+    event.Records[0].s3.bucket.name = 'source-bucket';
+
+    sinon.spy(context, 'fail');
+    imageResize.handler(event, context)
+    .finally(function() {
+      expect(context.fail.calledWith('Config must contain an array of widths to resize images to')).to.equal(true);
       context.fail.restore();
       done();
     });
@@ -135,16 +172,85 @@ lab.experiment('lambda resize', function() {
     event.Records[0].s3.object.key = 'some/path/file.jpg';
     event.Records[0].s3.bucket.name = 'source-bucket';
 
-    sinon.stub(s3, 'getObjectAsync');
+    sinon.stub(s3, 'getObjectAsync', function(options) {
+      expect(options.Bucket).to.equal(event.Records[0].s3.bucket.name);
+      expect(options.Key).to.equal(event.Records[0].s3.object.key);
+      s3.getObjectAsync.restore();
+      done();
+    });
+    imageResize.handler(event, context);
+  });
+
+  lab.it('should fail if the s3 object does not have a specified type', function(done) {
+    config.destinationBucket = 'destination-bucket';
+    event.Records[0].s3.object.key = 'some/path/file.jpg';
+    event.Records[0].s3.bucket.name = 'source-bucket';
+
+    sinon.spy(context, 'fail');
+    sinon.stub(s3, 'getObjectAsync', function() {
+      return Promise.resolve({
+        ContentType: 'not/correct'
+      });
+    });
     imageResize.handler(event, context)
     .finally(function() {
-      expect(s3.getObjectAsync.calledWith({
-        Bucket: 'source-bucket',
-        Key: 'some/path/file.jpg'
-      })).to.equal(true);
+      expect(context.fail.calledOnce).to.equal(true);
+      expect(context.fail.calledWith('Invalid content type: not/correct is not one of image/jpg, image/jpeg, image/gif, image/png')).to.equal(true);
       s3.getObjectAsync.restore();
+      context.fail.restore();
       done();
     });
   });
 
+  lab.it('should not fail if the s3 object does have a specified type', function(done) {
+    config.destinationBucket = 'destination-bucket';
+    event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
+    event.Records[0].s3.bucket.name = 'source-bucket';
+
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    sinon.stub(s3, 'getObjectAsync', function() {
+      return Promise.resolve({
+        Body: originalImage,
+        ContentType: 'image/png'
+      });
+    });
+    var imagemagick = require('imagemagick');
+    sinon.spy(imagemagick, 'resize');
+
+    imageResize.handler(event, context)
+    .finally(function() {
+      s3.getObjectAsync.restore();
+      expect(imagemagick.resize.callCount).to.equal(4);
+      imagemagick.resize.restore();
+      done();
+    });
+  });
+
+  lab.it('should attempt to put all resized objects', function(done) {
+    config.destinationBucket = 'destination-bucket';
+    event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
+    event.Records[0].s3.bucket.name = 'source-bucket';
+
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    sinon.stub(s3, 'getObjectAsync', function() {
+      return Promise.resolve({
+        Body: originalImage,
+        ContentType: 'image/png'
+      });
+    });
+    sinon.stub(s3, 'putObjectAsync', function() {
+      return Promise.resolve({
+        VersionId: 123
+      });
+    });
+    sinon.spy(context, 'succeed');
+
+    imageResize.handler(event, context)
+    .finally(function() {
+      s3.getObjectAsync.restore();
+      s3.putObjectAsync.restore();
+      expect(context.succeed.calledWith('4 images resized from some/path/not/fail/type/file.jpg and uploaded to ' + config.destinationBucket)).to.equal(true);
+      done();
+    });
+  });
 });

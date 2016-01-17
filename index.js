@@ -3,46 +3,78 @@
 var Promise = require('bluebird');
 var filename = require('filename.js');
 
-// var gm = require('gm')
-// .subClass({
-//   imageMagick: true
-// });
-
-var ALLOWED_FILETYPES = ['jpg', 'jpeg', 'gif', 'png'];
+var ALLOWED_FILETYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
 module.exports.handler = function(event, context) {
-  var sourceKey = event.Records[0].s3.object.key;
-  var destinationFolderName = filename.directoryName(sourceKey);
-  if (!destinationFolderName) {
-    return context.fail('Resize images function will not run for files at the bucket root');
+  var s3Object = event.Records[0].s3;
+  if (s3Object.object.size === 0) {
+    return context.fail('Object size is 0');
   }
 
-  var sourceExtension = filename.extension(sourceKey);
-  if (ALLOWED_FILETYPES.indexOf(sourceExtension) === -1) {
-    return context.fail(sourceExtension + ' is not one of ' + ALLOWED_FILETYPES.join(', '));
+  if (!filename.directoryName(s3Object.object.key)) {
+    return context.fail('Resize images function will not run for files at the bucket root');
   }
 
   var config;
   var s3 = require('./s3.js');
-  return Promise.promisify(require('fs').readFile)('./conig.json', 'utf8')
+  var path = require('path');
+  return Promise.promisify(require('fs').readFile)(path.resolve(__dirname, 'config.json'), 'utf8')
   .then(function(configString) {
     return JSON.parse(configString);
   })
-  .then(function validateBucket(_config_) {
+  .then(function validateConfig(_config_) {
     config = _config_;
     if (!config.destinationBucket) {
-      throw new Error('Destination bucket must be provided');
+      throw new Error('Config must provide a destinationBucket');
     }
-
-    var sourceBucket = event.Records[0].s3.bucket.name;
-    if (sourceBucket === config.destinationBucket) {
+    config.sizes = config.sizes || [];
+    config.sizes = config.sizes.filter(function(size) {
+      return !isNaN(parseInt(size, 10)) && isFinite(size);
+    });
+    if (!config.sizes.length) {
+      throw new Error('Config must contain an array of widths to resize images to');
+    }
+    return config;
+  })
+  .then(function validateBucket() {
+    if (s3Object.bucket.name === config.destinationBucket) {
       throw new Error('Source and destination buckets must be different');
     }
-
-    return s3.getObjectAsync({
-      Bucket: sourceBucket,
-      Key: sourceKey
+  })
+  .then(function getObject() {
+    return s3
+    .getObjectAsync({
+      Bucket: s3Object.bucket.name,
+      Key: s3Object.object.key
     });
+  })
+  .then(function validateImageType(image) {
+    if (ALLOWED_FILETYPES.indexOf(image.ContentType) === -1) {
+      throw new Error('Invalid content type: ' + image.ContentType + ' is not one of ' + ALLOWED_FILETYPES.join(', '));
+    }
+
+    return image;
+  })
+  .then(function resizeImage(image) {
+    var imageProcessor = require('./functions/image-processor.js')({
+      data: image.Body,
+      type: image.ContentType,
+      key: s3Object.object.key
+    });
+    return Promise.all(config.sizes.map(imageProcessor));
+  })
+  .then(function putObjects(images) {
+    return Promise.all(images.map(function(image) {
+      return s3.putObject({
+        Bucket: config.destinationBucket,
+        Key: image.key,
+        Body: image.data,
+        ContentType: image.type
+      });
+    }));
+  })
+  .then(function(responses) {
+    context.succeed(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket);
   })
   .catch(function(error) {
     if (error.code === 'ENOENT') {
