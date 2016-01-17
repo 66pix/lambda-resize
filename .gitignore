@@ -3,6 +3,7 @@
 deploy.env
 event.json
 npm-debug.log
+config.json
 
 # Directories
 node_modules/*
