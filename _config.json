@@ -1,4 +1,4 @@
 {
-  "destinationBucket": "%%DESTIONATION_BUCKET%%",
-  "sizes": [%%SIZES%%]
+  "destinationBucket": "DESTINATION_BUCKET",
+  "sizes": [SIZES]
 }
