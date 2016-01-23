@@ -31,6 +31,7 @@ echo "Deploying to {$ENVIRONMENT}"
 node-lambda deploy \
   --description "Resize uploaded images to $SIZES on $DESTINATION_BUCKET" \
   --environment "$ENVIRONMENT" \
+  --timeout 10 \
   --accessKey "$AWS_KEY" \
   --secretKey "$AWS_SECRET" \
   --region us-east-1 \
