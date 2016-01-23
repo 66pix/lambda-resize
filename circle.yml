@@ -14,7 +14,7 @@ deployment:
   staging:
     branch: develop
     commands:
-      - ./deploy.sh "staging"
+      - ./deploy.sh "staging" "88,100"
 
   production:
     branch: master
