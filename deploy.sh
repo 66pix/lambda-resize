@@ -28,16 +28,12 @@ sed -i "s/SIZES/$SIZES/g" config.json
 
 echo ""
 echo "Deploying to {$ENVIRONMENT}"
-node-lambda \
+node-lambda deploy \
+  --description "Resize uploaded images to $SIZES on $DESTINATION_BUCKET" \
   --environment "$ENVIRONMENT" \
-  --accessKey $AWS_KEY \
-  --secretKey $AWS_SECRET \
-  --region ap-southeast-2 \
-  --functionName resize-on-upload \
+  --accessKey "$AWS_KEY" \
+  --secretKey "$AWS_SECRET" \
+  --functionName "${ENVIRONMENT}-resize-on-upload" \
   --handler index.handler \
-  # --role "$AWS_LAMBDA_ARN "\
+  --role "$AWS_LAMBDA_ARN" \
   --description "Creates resized copies of images on $DESTINATION_BUCKET when uploads occur"
-
-
-
-# Deploy to lambda
