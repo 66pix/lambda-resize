@@ -1,6 +1,7 @@
 'use strict';
 
 var filename = require('filename.js');
+var Promise = require('bluebird');
 
 module.exports = function imageProcessor(image) {
   return function processImageToWidth(width) {
