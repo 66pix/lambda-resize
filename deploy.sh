@@ -33,6 +33,7 @@ node-lambda deploy \
   --environment "$ENVIRONMENT" \
   --accessKey "$AWS_KEY" \
   --secretKey "$AWS_SECRET" \
+  --region us-east-1 \
   --functionName "${ENVIRONMENT}-resize-on-upload" \
   --handler index.handler \
   --role "$AWS_LAMBDA_ARN" \
