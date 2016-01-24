@@ -1,6 +1,10 @@
 /* eslint-disable no-console */
 'use strict';
 
+process.on('uncaughtException', function(error) {
+  console.log('Uncaught exception', error);
+});
+
 var Promise = require('bluebird');
 var filename = require('filename.js');
 
