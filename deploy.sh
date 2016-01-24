@@ -13,14 +13,6 @@ else
 fi
 
 echo ""
-echo "Installing awscli"
-sudo pip install --upgrade awscli
-
-echo ""
-echo "Installing node-lambda"
-npm install -g node-lambda
-
-echo ""
 echo "Preparing config.json"
 cp _config.json config.json
 sed -i "s/DESTINATION_BUCKET/$DESTINATION_BUCKET/g" config.json
@@ -28,13 +20,13 @@ sed -i "s/SIZES/$SIZES/g" config.json
 
 echo ""
 echo "Deploying to {$ENVIRONMENT}"
-node-lambda deploy \
+./node_modules/./bin/node-lambda deploy \
   --description "Resize uploaded images to $SIZES on $DESTINATION_BUCKET" \
   --environment "$ENVIRONMENT" \
   --timeout 10 \
   --accessKey "$AWS_KEY" \
   --secretKey "$AWS_SECRET" \
-  --region us-east4 \
+  --region "$AWS_REGION" \
   --functionName "${ENVIRONMENT}-resize-on-upload" \
   --handler index.handler \
   --role "$AWS_LAMBDA_ARN" \
