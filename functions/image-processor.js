@@ -4,7 +4,7 @@ var filename = require('filename.js');
 var Promise = require('bluebird');
 
 module.exports = function imageProcessor(image) {
-  return function processImageToWidth(width) {
+  return function processImageToWidth(width, suffix) {
     var params = {
       srcPath: '-',
       srcData: image.data,
@@ -20,8 +20,12 @@ module.exports = function imageProcessor(image) {
         if (error || stderr) {
           return reject('imagemagick error: ' + (error || stderr));
         }
+        var suffixes = ['w' + width];
+        if (suffix) {
+          suffixes.push(suffix);
+        }
         resolve({
-          key: filename.appendSuffix('w' + width, image.key),
+          key: filename.appendSuffix(suffixes, image.key),
           data: stdout,
           type: image.type
         });
