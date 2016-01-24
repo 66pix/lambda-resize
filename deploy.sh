@@ -12,6 +12,9 @@ else
   DESTINATION_BUCKET=$STAGING_BUCKET
 fi
 
+BRANCH=`echo ${CIRCLE_BRANCH//\//_}`
+VERSION="$ENVIRONMENT-$BRANCH-$CIRCLE_BUILD_NUM"
+
 echo ""
 echo "Preparing config.json"
 cp _config.json config.json
@@ -30,4 +33,5 @@ echo "Deploying to {$ENVIRONMENT}"
   --functionName "${ENVIRONMENT}-resize-on-upload" \
   --handler index.handler \
   --role "$AWS_LAMBDA_ARN" \
+  --version "$VERSION"
   --description "Creates resized copies of images on $DESTINATION_BUCKET when uploads occur"
