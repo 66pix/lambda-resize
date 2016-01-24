@@ -19,7 +19,7 @@ echo ""
 echo "Preparing config.json"
 cp _config.json config.json
 
-echo "Destionation bucket: $DESTINATION_BUCKET"
+echo "Destination bucket: $DESTINATION_BUCKET"
 sed -i "s/DESTINATION_BUCKET/$DESTINATION_BUCKET/g" config.json
 
 echo "Sizes: $SIZES"
