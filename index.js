@@ -1,15 +1,5 @@
 'use strict';
 
-process.on('uncaughtException', function(error) {
-  console.log('Error: ', error); // eslint-disable-line no-console
-  context.fail();
-});
-
-process.on('unhandledRejection', function(reason, promise) {
-  console.log('Unhandled Rejection at: Promise ', promise, ' reason: ', reason); // eslint-disable-line no-console
-  context.fail('Unhandled rejection');
-});
-
 var Promise = require('bluebird');
 var filename = require('filename.js');
 
