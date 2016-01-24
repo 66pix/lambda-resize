@@ -71,7 +71,12 @@ module.exports.handler = function(event, context) {
       type: image.ContentType,
       key: s3Object.object.key
     });
-    return Promise.all(config.sizes.map(imageProcessor));
+    return Promise.all(config.sizes.map(function(size) {
+      return Promise.all([
+        imageProcessor(size),
+        imageProcessor(size * 2, '@2x')
+      ]);
+    }));
   })
   .then(function putObjects(images) {
     return Promise.all(images.map(function(image) {
