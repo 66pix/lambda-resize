@@ -83,14 +83,16 @@ module.exports.handler = function(event, context) {
         Bucket: config.destinationBucket,
         Key: image.key,
         Data: image.data.length,
-        ContentType: image.type
+        ContentType: image.type,
+        ContentEncoding: 'utf8'
       });
       return s3.putObject({
         ACL: 'private',
         Bucket: config.destinationBucket,
         Key: image.key,
         Body: image.data,
-        ContentType: image.type
+        ContentType: image.type,
+        ContentEncoding: 'utf8'
       });
     }));
   })
