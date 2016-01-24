@@ -85,8 +85,10 @@ module.exports.handler = function(event, context) {
     console.log('uploading images');
     return Promise.all(images.map(function(image) {
       console.log({
+        ACL: 'private',
         Bucket: config.destinationBucket,
         Key: image.key,
+        Body: image.data,
         ContentType: image.type
       });
       return s3.putObject({
