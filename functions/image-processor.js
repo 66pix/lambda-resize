@@ -34,9 +34,10 @@ module.exports = function imageProcessor(image) {
           suffixes.push(suffix);
         }
         console.log(suffixes);
+        console.log('stdout is buffer?', Buffer.isBuffer(stdout));
         resolve({
           key: filename.appendSuffix(suffixes, image.key),
-          data: stdout,
+          data: Buffer.isBuffer(stdout) ? stdout : new Buffer(stdout, 'binary'),
           type: image.type
         });
       });

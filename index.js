@@ -88,9 +88,9 @@ module.exports.handler = function(event, context) {
         ACL: 'private',
         Bucket: config.destinationBucket,
         Key: image.key,
-        Body: image.data,
         ContentType: image.type
       });
+      console.log(typeof image.data);
       return s3.putObject({
         ACL: 'private',
         Bucket: config.destinationBucket,
