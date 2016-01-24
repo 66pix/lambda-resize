@@ -1,9 +1,4 @@
-/* eslint-disable no-console */
 'use strict';
-
-process.on('uncaughtException', function(error) {
-  console.log('Uncaught exception', error);
-});
 
 var Promise = require('bluebird');
 var filename = require('filename.js');
@@ -76,15 +71,7 @@ module.exports.handler = function(event, context) {
     })));
   })
   .then(function putObjects(images) {
-    console.log('uploading images');
     return Promise.all(images.map(function(image) {
-      console.log({
-        Bucket: config.destinationBucket,
-        Key: image.key,
-        Data: image.data.length,
-        ContentType: image.type,
-        ContentEncoding: 'utf8'
-      });
       return s3.putObjectAsync({
         Bucket: config.destinationBucket,
         Key: image.key,
@@ -95,11 +82,10 @@ module.exports.handler = function(event, context) {
     }));
   })
   .then(function(responses) {
-    console.log(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket);
+    console.log(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket); // eslint-disable-line no-console
     context.succeed(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket);
   })
   .catch(function(error) {
-    console.log(error);
     if (error.code === 'ENOENT') {
       return context.fail('Error ' + error.code + ': ' + error.path + ' not found');
     }
