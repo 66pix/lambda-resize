@@ -20,7 +20,7 @@ sed -i "s/SIZES/$SIZES/g" config.json
 
 echo ""
 echo "Deploying to {$ENVIRONMENT}"
-./node_modules/./bin/node-lambda deploy \
+./node_modules/node-lambda/bin/node-lambda deploy \
   --description "Resize uploaded images to $SIZES on $DESTINATION_BUCKET" \
   --environment "$ENVIRONMENT" \
   --timeout 10 \
