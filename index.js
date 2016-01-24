@@ -90,6 +90,7 @@ module.exports.handler = function(event, context) {
         ContentType: image.type
       });
       return s3.putObject({
+        ACL: 'private',
         Bucket: config.destinationBucket,
         Key: image.key,
         Body: image.data,
@@ -98,12 +99,17 @@ module.exports.handler = function(event, context) {
     }));
   })
   .then(function(responses) {
+    console.log('uploads completed');
+    console.log(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket);
     context.succeed(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket);
   })
   .catch(function(error) {
+    console.log(error);
+    console.trace(error);
     if (error.code === 'ENOENT') {
       return context.fail('Error ' + error.code + ': ' + error.path + ' not found');
     }
+    console.log('error');
     console.log(error);
     return context.fail(error.message);
   });
