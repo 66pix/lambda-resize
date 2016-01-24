@@ -7,7 +7,6 @@ var Promise = require('bluebird');
 
 module.exports = function imageProcessor(image) {
   return function processImageToWidth(width, suffix) {
-    console.log(width, suffix);
     var params = {
       srcPath: '-',
       srcData: image.data,
@@ -27,7 +26,6 @@ module.exports = function imageProcessor(image) {
         if (suffix) {
           suffixes.push(suffix);
         }
-        console.log('stdout is buffer?', Buffer.isBuffer(stdout));
         resolve({
           key: filename.appendSuffix(suffixes, image.key),
           data: new Buffer(stdout, 'binary'),
