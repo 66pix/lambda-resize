@@ -249,7 +249,7 @@ lab.experiment('index', function() {
     .finally(function() {
       s3.getObjectAsync.restore();
       s3.putObjectAsync.restore();
-      expect(context.succeed.calledWith('4 images resized from some/path/not/fail/type/file.jpg and uploaded to ' + config.destinationBucket)).to.equal(true);
+      expect(context.succeed.calledWith('8 images resized from some/path/not/fail/type/file.jpg and uploaded to ' + config.destinationBucket)).to.equal(true);
       done();
     });
   });
