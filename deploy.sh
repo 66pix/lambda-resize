@@ -33,5 +33,5 @@ echo "Deploying to {$ENVIRONMENT}"
   --functionName "${ENVIRONMENT}-resize-on-upload" \
   --handler index.handler \
   --role "$AWS_LAMBDA_ARN" \
-  --version "$VERSION"
+  --version "$VERSION" \
   --description "Creates resized copies of images on $DESTINATION_BUCKET when uploads occur"
