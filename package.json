@@ -15,7 +15,6 @@
     "aws-sdk": "^2.2.30",
     "bluebird": "^3.1.1",
     "filename.js": "^1.0.5",
-    "gm": "^1.21.1",
     "imagemagick": "^0.1.3"
   },
   "devDependencies": {
@@ -24,7 +23,7 @@
     "eslint": "^1.10.3",
     "husky": "^0.10.2",
     "lab": "^8.0.2",
-    "local-node-lambda": "0.0.1",
+    "node-lambda": "git+https://github.com/faceleg/node-lambda.git#feature/deploy-fail-throw",
     "sinon": "^1.17.2"
   }
 }
