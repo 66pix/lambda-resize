@@ -7,6 +7,7 @@ process.on('uncaughtException', function(error) {
 
 var Promise = require('bluebird');
 var filename = require('filename.js');
+var R = require('ramda');
 
 var ALLOWED_FILETYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
@@ -73,12 +74,12 @@ module.exports.handler = function(event, context) {
       type: image.ContentType,
       key: s3Object.object.key
     });
-    return Promise.all(config.sizes.map(function(size) {
-      return Promise.all([
+    return Promise.all(R.flatten(config.sizes.map(function(size) {
+      return [
         imageProcessor(size),
         imageProcessor(size * 2, '@2x')
-      ]);
-    }));
+      ];
+    })));
   })
   .then(function putObjects(images) {
     console.log('uploading images');
@@ -103,6 +104,7 @@ module.exports.handler = function(event, context) {
     if (error.code === 'ENOENT') {
       return context.fail('Error ' + error.code + ': ' + error.path + ' not found');
     }
+    console.log(error);
     return context.fail(error.message);
   });
 
