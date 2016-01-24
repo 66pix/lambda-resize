@@ -220,7 +220,7 @@ lab.experiment('index', function() {
     imageResize.handler(event, context)
     .finally(function() {
       s3.getObjectAsync.restore();
-      expect(imagemagick.resize.callCount).to.equal(4);
+      expect(imagemagick.resize.callCount).to.equal(8);
       imagemagick.resize.restore();
       done();
     });
