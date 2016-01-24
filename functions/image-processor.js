@@ -18,26 +18,19 @@ module.exports = function imageProcessor(image) {
     };
 
     var imagemagick = require('imagemagick');
-    console.log('imagemagick');
     return new Promise(function(resolve, reject) {
-      console.log('resize');
-      console.log(params.srcPath, params.srcFormat, params.width, params.dstPath, params.format);
       imagemagick.resize(params, function(error, stdout, stderr) {
-        console.log(error);
-        console.log(stderr);
         if (error || stderr) {
           return reject('imagemagick error: ' + (error || stderr));
         }
-        console.log('no errors');
         var suffixes = ['w' + width];
         if (suffix) {
           suffixes.push(suffix);
         }
-        console.log(suffixes);
         console.log('stdout is buffer?', Buffer.isBuffer(stdout));
         resolve({
           key: filename.appendSuffix(suffixes, image.key),
-          data: Buffer.isBuffer(stdout) ? stdout : new Buffer(stdout, 'binary'),
+          data: new Buffer(stdout, 'binary'),
           type: image.type
         });
       });
