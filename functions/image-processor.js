@@ -25,6 +25,7 @@ module.exports = function imageProcessor(image) {
         var suffixes = ['w' + width];
         if (suffix) {
           suffixes.push(suffix);
+          suffixes[0] = 'w' + parseInt(width / 2, 10);
         }
         resolve({
           key: filename.appendSuffix(suffixes, image.key),
