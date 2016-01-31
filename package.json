@@ -1,6 +1,6 @@
 {
   "name": "lamda-resize",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Resize images and put them in a matching directory on the given bucket, suffixing them with the resized width",
   "repository": "git@github.com:66pix/lambda-resize.git",
   "main": "handler.js",
