@@ -6,7 +6,7 @@ var filename = require('filename.js');
 var Promise = require('bluebird');
 
 module.exports = function imageProcessor(image) {
-  return function processImageToWidth(width, suffix) {
+  return function processImageToWidth(width, retina) {
     var params = {
       srcPath: '-',
       srcData: image.data,
@@ -22,13 +22,17 @@ module.exports = function imageProcessor(image) {
         if (error || stderr) {
           return reject('imagemagick error: ' + (error || stderr));
         }
-        var suffixes = ['w' + width];
-        if (suffix) {
-          suffixes.push(suffix);
-          suffixes[0] = 'w' + parseInt(width / 2, 10);
+
+        var imageFilename = image.key;
+        if (retina) {
+          imageFilename = filename.appendSuffix('w' + parseInt(width / 2, 10), imageFilename);
+          imageFilename = filename.appendSuffixWithDelimiter(retina, '', imageFilename);
+        } else {
+          imageFilename = filename.appendSuffix('w' + width, imageFilename);
         }
+
         resolve({
-          key: filename.appendSuffix(suffixes, image.key),
+          key: imageFilename,
           data: new Buffer(stdout, 'binary'),
           type: image.type
         });
