@@ -55,18 +55,6 @@ module.exports.handler = function(event, context) {
       throw new Error('Invalid content type: ' + image.ContentType + ' is not one of ' + ALLOWED_FILETYPES.join(', '));
     }
 
-    if (config.copyOriginal) {
-      return s3.putObjectAsync({
-        Bucket: config.destinationBucket,
-        Key: s3Object.key,
-        Body: image.Body,
-        ContentType: image.ContentType,
-        ContentEncoding: 'utf8'
-      })
-      .then(function() {
-        return image;
-      });
-    }
     return image;
   })
   .then(function resizeImage(image) {
@@ -83,16 +71,19 @@ module.exports.handler = function(event, context) {
     })));
   })
   .then(function putObjects(images) {
-    var resizedPuts = images.map(function(image) {
+    return Promise.all(images.map(function(image) {
+      var key = image.key;
+      if (config.prependPrefix) {
+        key = path.join(config.prependPrefix, image.key);
+      }
       return s3.putObjectAsync({
         Bucket: config.destinationBucket,
-        Key: image.key,
+        Key: key,
         Body: image.data,
         ContentType: image.type,
         ContentEncoding: 'utf8'
       });
-    });
-    return Promise.all(resizedPuts);
+    }));
   })
   .then(function(responses) {
     console.log(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket); // eslint-disable-line no-console

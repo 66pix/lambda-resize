@@ -1,5 +1,5 @@
 {
   "destinationBucket": "DESTINATION_BUCKET",
   "sizes": [SIZES],
-  "copyOriginal": true
+  "prependPrefix": "resized"
 }
