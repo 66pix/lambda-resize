@@ -1,4 +1,5 @@
 {
   "destinationBucket": "DESTINATION_BUCKET",
-  "sizes": [SIZES]
+  "sizes": [SIZES],
+  "copyOriginal": true
 }
