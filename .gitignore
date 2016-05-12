@@ -4,6 +4,7 @@ deploy.env
 event.json
 npm-debug.log
 config.json
+.DS_Store
 
 # Directories
 node_modules/*

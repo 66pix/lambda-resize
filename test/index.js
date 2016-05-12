@@ -7,7 +7,7 @@ var expect = Code.expect;
 var sinon = require('sinon');
 var fs = require('fs');
 var path = require('path');
-var s3 = require('../s3.js');
+var s3 = require('../s3.js'); // eslint-disable-line id-length
 var Promise = require('bluebird');
 
 lab.experiment('index', function() {
@@ -214,13 +214,17 @@ lab.experiment('index', function() {
         ContentType: 'image/png'
       });
     });
+    sinon.stub(s3, 'putObjectAsync', function() {
+      return Promise.resolve({});
+    });
     var imagemagick = require('imagemagick');
     sinon.spy(imagemagick, 'resize');
 
     imageResize.handler(event, context)
     .finally(function() {
       s3.getObjectAsync.restore();
-      expect(imagemagick.resize.callCount).to.equal(4);
+      s3.putObjectAsync.restore();
+      expect(imagemagick.resize.callCount).to.equal(8);
       imagemagick.resize.restore();
       done();
     });
@@ -249,7 +253,7 @@ lab.experiment('index', function() {
     .finally(function() {
       s3.getObjectAsync.restore();
       s3.putObjectAsync.restore();
-      expect(context.succeed.calledWith('4 images resized from some/path/not/fail/type/file.jpg and uploaded to ' + config.destinationBucket)).to.equal(true);
+      expect(context.succeed.calledWith('8 images resized from some/path/not/fail/type/file.jpg and uploaded to ' + config.destinationBucket)).to.equal(true);
       done();
     });
   });

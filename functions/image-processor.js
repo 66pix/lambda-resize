@@ -1,9 +1,12 @@
 'use strict';
 
+/* eslint-disable no-console */
+
 var filename = require('filename.js');
+var Promise = require('bluebird');
 
 module.exports = function imageProcessor(image) {
-  return function processImageToWidth(width) {
+  return function processImageToWidth(width, retina) {
     var params = {
       srcPath: '-',
       srcData: image.data,
@@ -19,9 +22,18 @@ module.exports = function imageProcessor(image) {
         if (error || stderr) {
           return reject('imagemagick error: ' + (error || stderr));
         }
-        resolve({
-          key: filename.appendSuffix('w' + width, image.key),
-          data: stdout,
+
+        var imageFilename = image.key;
+        if (retina) {
+          imageFilename = filename.appendSuffix('w' + parseInt(width / 2, 10), imageFilename);
+          imageFilename = filename.appendSuffixWithDelimiter(retina, '', imageFilename);
+        } else {
+          imageFilename = filename.appendSuffix('w' + width, imageFilename);
+        }
+
+        return resolve({
+          key: imageFilename,
+          data: new Buffer(stdout, 'binary'),
           type: image.type
         });
       });

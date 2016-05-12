@@ -2,6 +2,7 @@
 
 var Promise = require('bluebird');
 var filename = require('filename.js');
+var R = require('ramda');
 
 var ALLOWED_FILETYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
@@ -16,7 +17,7 @@ module.exports.handler = function(event, context) {
   }
 
   var config;
-  var s3 = require('./s3.js');
+  var s3 = require('./s3.js'); // eslint-disable-line id-length
   var path = require('path');
   return Promise.promisify(require('fs').readFile)(path.resolve(__dirname, 'config.json'), 'utf8')
   .then(function(configString) {
@@ -40,6 +41,7 @@ module.exports.handler = function(event, context) {
     if (s3Object.bucket.name === config.destinationBucket) {
       throw new Error('Source and destination buckets must be different');
     }
+
   })
   .then(function getObject() {
     return s3
@@ -61,19 +63,26 @@ module.exports.handler = function(event, context) {
       type: image.ContentType,
       key: s3Object.object.key
     });
-    return Promise.all(config.sizes.map(imageProcessor));
+    return Promise.all(R.flatten(config.sizes.map(function(size) {
+      return [
+        imageProcessor(size),
+        imageProcessor(size * 2, '@2x')
+      ];
+    })));
   })
   .then(function putObjects(images) {
     return Promise.all(images.map(function(image) {
-      return s3.putObject({
+      return s3.putObjectAsync({
         Bucket: config.destinationBucket,
         Key: image.key,
         Body: image.data,
-        ContentType: image.type
+        ContentType: image.type,
+        ContentEncoding: 'utf8'
       });
     }));
   })
   .then(function(responses) {
+    console.log(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket); // eslint-disable-line no-console
     context.succeed(responses.length + ' images resized from ' + s3Object.object.key + ' and uploaded to ' + config.destinationBucket);
   })
   .catch(function(error) {

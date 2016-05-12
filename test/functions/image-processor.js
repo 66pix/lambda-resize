@@ -48,7 +48,7 @@ lab.experiment('process image', function() {
         }
         expect(parseInt(out, 10)).to.equal(88);
         fs.unlinkSync(destinationPath); // eslint-disable-line no-sync
-        done();
+        return done();
       });
     });
   });
@@ -61,6 +61,18 @@ lab.experiment('process image', function() {
     })(88)
     .then(function(resizedImage) {
       expect(resizedImage.key).to.equal('/this/is/the/file.w88.jpg');
+      done();
+    });
+  });
+
+  lab.test('should resize the given jpg image into appropriately named files with retina', function(done) {
+    imageProcessor({
+      data: originalJpgImage,
+      type: 'image/jpg',
+      key: '/this/is/the/file.jpg'
+    })(176, '@2x')
+    .then(function(resizedImage) {
+      expect(resizedImage.key).to.equal('/this/is/the/file.w88@2x.jpg');
       done();
     });
   });
@@ -80,7 +92,7 @@ lab.experiment('process image', function() {
         }
         expect(parseInt(out, 10)).to.equal(88);
         fs.unlinkSync(destinationPath); // eslint-disable-line no-sync
-        done();
+        return done();
       });
     });
   });
