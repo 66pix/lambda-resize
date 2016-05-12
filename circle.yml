@@ -8,8 +8,8 @@ dependencies:
 
 test:
   override:
-    - npm test
-    - npm lint
+    - npm run test
+    - npm run lint
 
 deployment:
   staging:
