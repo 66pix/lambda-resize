@@ -19,4 +19,4 @@ deployment:
   production:
     branch: master
     commands:
-      - ./deploy.sh "production"
+      - ./deploy.sh "production" "80,88,100,300,500"
