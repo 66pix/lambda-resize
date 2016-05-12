@@ -207,7 +207,7 @@ lab.experiment('index', function() {
     event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
     event.Records[0].s3.bucket.name = 'source-bucket';
 
-    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg')); // eslint-disable-line no-sync
     sinon.stub(s3, 'getObjectAsync', function() {
       return Promise.resolve({
         Body: originalImage,
@@ -235,7 +235,7 @@ lab.experiment('index', function() {
     event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
     event.Records[0].s3.bucket.name = 'source-bucket';
 
-    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg')); // eslint-disable-line no-sync
     sinon.stub(s3, 'getObjectAsync', function() {
       return Promise.resolve({
         Body: originalImage,
@@ -264,7 +264,7 @@ lab.experiment('index', function() {
     event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
     event.Records[0].s3.bucket.name = 'source-bucket';
 
-    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg')); // eslint-disable-line no-sync
     sinon.stub(s3, 'getObjectAsync', function() {
       return Promise.resolve({
         Body: originalImage,
