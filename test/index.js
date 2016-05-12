@@ -257,4 +257,34 @@ lab.experiment('index', function() {
       done();
     });
   });
+
+  lab.it('should prepend the prefix correctly if provided', function(done) {
+    config.destinationBucket = 'destination-bucket';
+    config.prependPrefix = 'resized';
+    event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
+    event.Records[0].s3.bucket.name = 'source-bucket';
+
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    sinon.stub(s3, 'getObjectAsync', function() {
+      return Promise.resolve({
+        Body: originalImage,
+        ContentType: 'image/png'
+      });
+    });
+    sinon.stub(s3, 'putObjectAsync', function(params) {
+      expect(params.Key.indexOf('resized')).to.equal(0);
+      return Promise.resolve({
+        VersionId: 123
+      });
+    });
+    sinon.spy(context, 'succeed');
+
+    imageResize.handler(event, context)
+    .finally(function() {
+      s3.getObjectAsync.restore();
+      s3.putObjectAsync.restore();
+      expect(context.succeed.calledWith('8 images resized from some/path/not/fail/type/file.jpg and uploaded to ' + config.destinationBucket)).to.equal(true);
+      done();
+    });
+  });
 });

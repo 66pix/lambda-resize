@@ -72,9 +72,13 @@ module.exports.handler = function(event, context) {
   })
   .then(function putObjects(images) {
     return Promise.all(images.map(function(image) {
+      var key = image.key;
+      if (config.prependPrefix) {
+        key = path.join(config.prependPrefix, image.key);
+      }
       return s3.putObjectAsync({
         Bucket: config.destinationBucket,
-        Key: image.key,
+        Key: key,
         Body: image.data,
         ContentType: image.type,
         ContentEncoding: 'utf8'
