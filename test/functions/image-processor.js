@@ -48,7 +48,7 @@ lab.experiment('process image', function() {
         }
         expect(parseInt(out, 10)).to.equal(88);
         fs.unlinkSync(destinationPath); // eslint-disable-line no-sync
-        done();
+        return done();
       });
     });
   });
@@ -92,7 +92,7 @@ lab.experiment('process image', function() {
         }
         expect(parseInt(out, 10)).to.equal(88);
         fs.unlinkSync(destinationPath); // eslint-disable-line no-sync
-        done();
+        return done();
       });
     });
   });
