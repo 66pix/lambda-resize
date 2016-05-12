@@ -5,7 +5,7 @@
   "repository": "git@github.com:66pix/lambda-resize.git",
   "main": "handler.js",
   "scripts": {
-    "test": "lab --coverage",
+    "test": "lab --coverage --timeout 5000 --context-timeout 5000",
     "lint": "node_modules/.bin/eslint --ignore-path .gitignore .",
     "precommit": "npm run lint && npm run test"
   },
