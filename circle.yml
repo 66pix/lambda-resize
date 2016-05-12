@@ -9,6 +9,7 @@ dependencies:
 test:
   override:
     - npm test
+    - npm lint
 
 deployment:
   staging:

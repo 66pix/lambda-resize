@@ -5,7 +5,7 @@
   "repository": "git@github.com:66pix/lambda-resize.git",
   "main": "handler.js",
   "scripts": {
-    "test": "lab --lint --coverage || true",
+    "test": "lab --coverage",
     "lint": "node_modules/.bin/eslint --ignore-path .gitignore .",
     "precommit": "npm run lint && npm run test"
   },
