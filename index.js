@@ -17,7 +17,7 @@ module.exports.handler = function(event, context) {
   }
 
   var config;
-  var s3 = require('./s3.js');
+  var s3 = require('./s3.js'); // eslint-disable-line id-length
   var path = require('path');
   return Promise.promisify(require('fs').readFile)(path.resolve(__dirname, 'config.json'), 'utf8')
   .then(function(configString) {

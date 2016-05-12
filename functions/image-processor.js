@@ -31,7 +31,7 @@ module.exports = function imageProcessor(image) {
           imageFilename = filename.appendSuffix('w' + width, imageFilename);
         }
 
-        resolve({
+        return resolve({
           key: imageFilename,
           data: new Buffer(stdout, 'binary'),
           type: image.type

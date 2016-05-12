@@ -7,7 +7,7 @@ var expect = Code.expect;
 var sinon = require('sinon');
 var fs = require('fs');
 var path = require('path');
-var s3 = require('../s3.js');
+var s3 = require('../s3.js'); // eslint-disable-line id-length
 var Promise = require('bluebird');
 
 lab.experiment('index', function() {
