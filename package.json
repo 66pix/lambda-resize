@@ -7,7 +7,8 @@
   "scripts": {
     "test": "lab --coverage --timeout 5000 --context-timeout 5000",
     "lint": "node_modules/.bin/eslint --ignore-path .gitignore .",
-    "precommit": "npm run lint && npm run test"
+    "precommit": "npm run lint && npm run test",
+    "nsp": "nsp check npm-shrinkwrap.json"
   },
   "author": "Michael Robinson <michael.robinson@66pix.com>",
   "license": "ISC",
@@ -16,6 +17,7 @@
     "bluebird": "^3.1.5",
     "filename.js": "^1.0.11",
     "imagemagick": "^0.1.3",
+    "nsp": "^2.4.0",
     "ramda": "^0.19.1"
   },
   "devDependencies": {
