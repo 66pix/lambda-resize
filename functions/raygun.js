@@ -21,5 +21,12 @@
   raygunClient.setTags([
     process.env.NODE_ENV
   ]);
+
+  var d = require('domain').create(); // eslint-disable-line id-length
+  d.on('error', function(err) {
+    raygunClient.send(err, {}, function() {
+      process.exit(); // eslint-disable-line no-process-exit
+    });
+  });
 })();
 
