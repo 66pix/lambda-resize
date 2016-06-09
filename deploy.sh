@@ -25,6 +25,9 @@ sed -i "s/DESTINATION_BUCKET/$DESTINATION_BUCKET/g" config.json
 echo "Sizes: $SIZES"
 sed -i "s/SIZES/$SIZES/g" config.json
 
+echo "Creating deploy.env file"
+echo "RAYGUN_API_KEY=$RAYGUN_API_KEY" >> deploy.env
+
 echo ""
 echo "Deploying to $ENVIRONMENT"
 ./node_modules/node-lambda/bin/node-lambda deploy \
@@ -38,4 +41,5 @@ echo "Deploying to $ENVIRONMENT"
   --handler index.handler \
   --region "$AWS_REGION" \
   --role "$AWS_LAMBDA_ARN" \
-  --description "Creates resized copies of images on $DESTINATION_BUCKET when uploads occur"
+  --description "Creates resized copies of images on $DESTINATION_BUCKET when uploads occur" \
+  --configFile deploy.env
