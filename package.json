@@ -5,8 +5,8 @@
   "repository": "git@github.com:66pix/lambda-resize.git",
   "main": "handler.js",
   "scripts": {
-    "test": "lab --coverage --timeout 5000 --context-timeout 5000 -t 93",
-    "lint": "node_modules/.bin/eslint --ignore-path .gitignore .",
+    "test": "lab --coverage --timeout 10000 --context-timeout 10000 -t 93",
+    "lint": "eslint --ignore-path .gitignore .",
     "nsp": "nsp check npm-shrinkwrap.json"
   },
   "author": "Michael Robinson <michael.robinson@66pix.com>",
@@ -27,5 +27,38 @@
     "lab": "^8.2.0",
     "node-lambda": "^0.8.3",
     "sinon": "^1.17.3"
+  },
+  "lambci": {
+    "docker": {
+      "cluster": "lambci-ecs-Cluster-1L3R71YGHV605",
+      "task": "lambci-ecs-BuildTask-1O10LW56SQ09B:1"
+    },
+    "build": false,
+    "branches": {
+      "master": {
+        "build": true,
+        "notifications": {
+          "slack": {
+            "channel": "#ci"
+          }
+        }
+      },
+      "develop": {
+        "build": true,
+        "notifications": {
+          "slack": {
+            "channel": "#ci"
+          }
+        }
+      },
+      "/feature/.*/": {
+        "build": true,
+        "notifications": {
+          "slack": {
+            "channel": "#staging-ci"
+          }
+        }
+      }
+    }
   }
 }
