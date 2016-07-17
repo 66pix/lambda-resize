@@ -3,6 +3,8 @@
 set -o nounset
 set -o errexit
 
+ln -s /usr/local/lib64/node-v4.3.x/bin/npm /usr/local/bin/npm
+
 /usr/local/lib64/node-v4.3.x/bin/npm run nsp
 /usr/local/lib64/node-v4.3.x/bin/npm run lint
 /usr/local/lib64/node-v4.3.x/bin/npm run test
