@@ -1,4 +1,4 @@
-FROM lambci/lambda:build
+FROM lambci/lambda:build-nodejs4.3
 
 ENV AWS_DEFAULT_REGION us-east-1
 
