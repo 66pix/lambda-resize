@@ -34,8 +34,8 @@ echo "Deploying to $ENVIRONMENT"
 ./node_modules/node-lambda/bin/node-lambda deploy \
   --description "Resize uploaded images to $SIZES on $DESTINATION_BUCKET" \
   --environment "$ENVIRONMENT" \
-  --timeout 60 \
-  --memorySize 1024 \
+  --timeout 180 \
+  --memorySize 1536 \
   --accessKey "$AWS_LAMBDA_DEPLOY_ACCESS_KEY_ID" \
   --secretKey "$AWS_LAMBDA_DEPLOY_ACCESS_KEY_SECRET" \
   --functionName "${ENVIRONMENT}-resize-on-upload" \
