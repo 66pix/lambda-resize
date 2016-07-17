@@ -1,6 +1,7 @@
 #!/bin/bash
 
-set -e
+set -o nounset
+set -o errexit
 
 ENVIRONMENT=$1
 SIZES=$2
