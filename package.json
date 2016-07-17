@@ -23,8 +23,8 @@
   "devDependencies": {
     "code": "^3.0.1",
     "coverage-average": "^1.0.4",
-    "eslint": "^3.1.0",
-    "lab": "^10.9.0",
+    "eslint": "^1.10.3",
+    "lab": "^8.2.0",
     "node-lambda": "^0.8.6",
     "sinon": "^1.17.4"
   },
