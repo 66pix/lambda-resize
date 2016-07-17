@@ -6,9 +6,9 @@ set -o errexit
 ln -s /usr/local/lib64/node-v4.3.x/bin/npm /usr/local/bin/npm
 ln -s /usr/local/lib64/node-v4.3.x/bin/node /usr/local/bin/node
 
-/usr/local/lib64/node-v4.3.x/bin/npm run nsp
-/usr/local/lib64/node-v4.3.x/bin/npm run lint
-/usr/local/lib64/node-v4.3.x/bin/npm run test
+npm run nsp
+npm run lint
+npm run test
 
 if [ "$LAMBCI_BRANCH" != "develop" ] && [ "$LAMBCI_BRANCH" != "master" ]; then
   echo "Deployment only triggered for develop or master, build was for $LAMBCI_BRANCH"
