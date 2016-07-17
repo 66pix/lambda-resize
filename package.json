@@ -7,7 +7,6 @@
   "scripts": {
     "test": "lab --coverage --timeout 5000 --context-timeout 5000 -t 93",
     "lint": "node_modules/.bin/eslint --ignore-path .gitignore .",
-    "precommit": "npm run lint && npm run test",
     "nsp": "nsp check npm-shrinkwrap.json"
   },
   "author": "Michael Robinson <michael.robinson@66pix.com>",
@@ -25,7 +24,6 @@
     "code": "^2.1.0",
     "coverage-average": "^1.0.4",
     "eslint": "^1.10.3",
-    "husky": "^0.10.2",
     "lab": "^8.2.0",
     "node-lambda": "^0.8.3",
     "sinon": "^1.17.3"
