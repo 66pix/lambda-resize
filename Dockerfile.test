@@ -1,0 +1,12 @@
+FROM lambci/lambda:build
+
+ENV AWS_DEFAULT_REGION us-east-1
+
+ADD package.json /tmp/package.json
+RUN cd /tmp && npm install --silent
+RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
+
+WORKDIR /opt/app
+ADD . /opt/app
+
+CMD /opt/app/test-lambci.sh
