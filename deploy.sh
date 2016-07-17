@@ -6,14 +6,14 @@ ENVIRONMENT=$1
 SIZES=$2
 
 DESTINATION_BUCKET=""
-if [ "$ENVIRONMENT" == "master" ]; then
+if [ "$LAMBCI_BRANCH" == "master" ]; then
   DESTINATION_BUCKET=$PRODUCTION_BUCKET
 else
   DESTINATION_BUCKET=$STAGING_BUCKET
 fi
 
-BRANCH=`echo ${CIRCLE_BRANCH//\//_}`
-VERSION="$ENVIRONMENT-$BRANCH-$CIRCLE_BUILD_NUM"
+BRANCH=`echo ${LAMBCI_BRANCH//\//_}`
+VERSION="$ENVIRONMENT-$BRANCH-$LAMBCI_BUILD_NUM"
 
 echo ""
 echo "Preparing config.json"
@@ -35,11 +35,12 @@ echo "Deploying to $ENVIRONMENT"
   --environment "$ENVIRONMENT" \
   --timeout 60 \
   --memorySize 1024 \
-  --accessKey "$AWS_KEY" \
-  --secretKey "$AWS_SECRET" \
+  --accessKey "$AWS_LAMBDA_DEPLOY_ACCESS_KEY_ID" \
+  --secretKey "$AWS_LAMBDA_DEPLOY_ACCESS_KEY_SECRET" \
   --functionName "${ENVIRONMENT}-resize-on-upload" \
   --handler index.handler \
-  --region "$AWS_REGION" \
-  --role "$AWS_LAMBDA_ARN" \
+  --region "$AWS_LAMBDA_IMAGE_RESIZE_REGION" \
+  --role "$AWS_LAMBDA_IMAGE_RESIZE_ROLE" \
+  --runtime "nodejs4.3" \
   --description "Creates resized copies of images on $DESTINATION_BUCKET when uploads occur" \
   --configFile deploy.env
