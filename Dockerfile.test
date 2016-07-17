@@ -1,7 +1,6 @@
 FROM lambci/lambda:build-nodejs4.3
 
-ENV AWS_DEFAULT_REGION us-east-1
-
+RUN rm -rf /opt/app/node_nodules
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm install --silent
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/

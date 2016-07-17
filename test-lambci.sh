@@ -3,9 +3,9 @@
 set -o nounset
 set -o errexit
 
-npm run nsp
-npm run lint
-npm run test
+/usr/local/lib64/node-v4.3.x/bin/npm run nsp
+/usr/local/lib64/node-v4.3.x/bin/npm run lint
+/usr/local/lib64/node-v4.3.x/bin/npm run test
 
 if [ "$LAMBCI_BRANCH" != "develop" ] && [ "$LAMBCI_BRANCH" != "master" ]; then
   echo "Deployment only triggered for develop or master, build was for $LAMBCI_BRANCH"
