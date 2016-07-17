@@ -1,5 +1,5 @@
 # lambda-resize
-[![Circle CI](https://circleci.com/gh/66pix/lambda-resize.svg?style=svg)](https://circleci.com/gh/66pix/lambda-resize)
+![LambCI](https://lambci-buildresults-h8k26bznx73q.s3.amazonaws.com/gh/66pix/lambda-resize/branches/develop/195466ab1ebc68866a15203a033a112b.svg)
 
 Resizes images and puts them in a matching directory on the given bucket, suffixing them with the resized width. Also creates @2x variants.
 
