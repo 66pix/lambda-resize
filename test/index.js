@@ -217,15 +217,11 @@ lab.experiment('index', function() {
     sinon.stub(s3, 'putObjectAsync', function() {
       return Promise.resolve({});
     });
-    var imagemagick = require('imagemagick');
-    sinon.spy(imagemagick, 'resize');
 
     imageResize.handler(event, context)
     .finally(function() {
       s3.getObjectAsync.restore();
       s3.putObjectAsync.restore();
-      expect(imagemagick.resize.callCount).to.equal(8);
-      imagemagick.resize.restore();
       done();
     });
   });
