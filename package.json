@@ -21,7 +21,7 @@
     "raygun": "^0.8.5"
   },
   "devDependencies": {
-    "code": "^2.1.0",
+    "code": "^1.0.0",
     "coverage-average": "^1.0.4",
     "eslint": "^1.10.3",
     "lab": "^6.0.0",
