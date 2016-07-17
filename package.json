@@ -24,7 +24,7 @@
     "code": "^2.1.0",
     "coverage-average": "^1.0.4",
     "eslint": "^1.10.3",
-    "lab": "^8.0.0",
+    "lab": "^6.0.0",
     "node-lambda": "^0.8.3",
     "sinon": "^1.17.3"
   },
