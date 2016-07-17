@@ -20,4 +20,4 @@ if [ "$LAMBCI_BRANCH" == "master" ]; then
   ENVIRONMENT="production"
 fi
 
-./deploy.sh "$LAMBCI_BRANCH" "80,88,100,300,500"
+./deploy.sh "$ENVIRONMENT" "80,88,100,300,500"
