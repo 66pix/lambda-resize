@@ -16,7 +16,7 @@ if [ "$LAMBCI_BRANCH" != "develop" ] && [ "$LAMBCI_BRANCH" != "master" ]; then
 fi
 
 ENVIRONMENT="staging"
-if [ "$LAMBCI_BRANCH" == "master" ]; then
+if [ -z "$LAMBCI_PULL_REQUEST" ] && [ "$LAMBCI_BRANCH" == "master" ]; then
   ENVIRONMENT="production"
 fi
 
