@@ -17,15 +17,15 @@
     "filename.js": "^1.0.11",
     "nsp": "^2.4.0",
     "ramda": "^0.19.1",
-    "raygun": "^0.8.5",
-    "sharp": "^0.15.1"
+    "raven": "*",
+    "sharp": "0.15.1"
   },
   "devDependencies": {
     "code": "^1.0.0",
     "coverage-average": "^1.0.4",
     "eslint": "^1.10.3",
     "lab": "^6.0.0",
-    "node-lambda": "^0.8.3",
+    "node-lambda": "0.8.3",
     "sinon": "^1.17.3"
   },
   "lambci": {
