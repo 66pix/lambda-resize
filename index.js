@@ -1,5 +1,7 @@
 'use strict';
 
+exports.handler = function(event, context) {
+
 var Promise = require('bluebird');
 var filename = require('filename.js');
 var R = require('ramda');
@@ -9,7 +11,6 @@ require('./functions/raven');
 console.log('9');
 var ALLOWED_FILETYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
-module.exports.handler = function(event, context) {
   console.log('13');
   var s3Object = event.Records[0].s3;
   if (s3Object.object.size === 0) {
