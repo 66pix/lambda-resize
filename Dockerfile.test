@@ -2,6 +2,7 @@ FROM lambci/lambda:build-nodejs4.3
 
 ADD package.json /tmp/package.json
 RUN cd /tmp && npm cache clean -f
+RUN npm i -g npm
 RUN cd /tmp && npm install  --no-optional
 RUN mkdir -p /opt/app && cp -a /tmp/node_modules /opt/app/
 
