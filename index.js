@@ -4,8 +4,8 @@ var Promise = require('bluebird');
 var filename = require('filename.js');
 var R = require('ramda');
 
-// Initialise raygun
-require('./functions/raygun');
+// Initialise raven
+require('./functions/raven');
 
 var ALLOWED_FILETYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
