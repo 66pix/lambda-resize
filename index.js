@@ -3,31 +3,34 @@
 var Promise = require('bluebird');
 var filename = require('filename.js');
 var R = require('ramda');
-
+console.log('6');
 // Initialise raven
 require('./functions/raven');
-
+console.log('9');
 var ALLOWED_FILETYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
 module.exports.handler = function(event, context) {
+  console.log('13');
   var s3Object = event.Records[0].s3;
   if (s3Object.object.size === 0) {
     return context.fail('Object size is 0');
   }
-
+console.log('18');
   if (!filename.directoryName(s3Object.object.key)) {
     return context.fail('Resize images function will not run for files at the bucket root');
   }
-
+console.log('22');
   var config;
   var s3 = require('./s3.js'); // eslint-disable-line id-length
   var path = require('path');
   return Promise.promisify(require('fs').readFile)(path.resolve(__dirname, 'config.json'), 'utf8')
   .then(function(configString) {
+    console.log('28');
     return JSON.parse(configString);
   })
   .then(function validateConfig(_config_) {
     config = _config_;
+    console.log('33');
     if (!config.destinationBucket) {
       throw new Error('Config must provide a destinationBucket');
     }
