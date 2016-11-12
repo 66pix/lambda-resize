@@ -4,6 +4,9 @@ var Promise = require('bluebird');
 var filename = require('filename.js');
 var R = require('ramda');
 
+// Initialise raygun
+require('./functions/raygun');
+
 var ALLOWED_FILETYPES = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
 
 module.exports.handler = function(event, context) {

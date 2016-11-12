@@ -207,7 +207,7 @@ lab.experiment('index', function() {
     event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
     event.Records[0].s3.bucket.name = 'source-bucket';
 
-    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg')); // eslint-disable-line no-sync
     sinon.stub(s3, 'getObjectAsync', function() {
       return Promise.resolve({
         Body: originalImage,
@@ -217,15 +217,11 @@ lab.experiment('index', function() {
     sinon.stub(s3, 'putObjectAsync', function() {
       return Promise.resolve({});
     });
-    var imagemagick = require('imagemagick');
-    sinon.spy(imagemagick, 'resize');
 
     imageResize.handler(event, context)
     .finally(function() {
       s3.getObjectAsync.restore();
       s3.putObjectAsync.restore();
-      expect(imagemagick.resize.callCount).to.equal(8);
-      imagemagick.resize.restore();
       done();
     });
   });
@@ -235,7 +231,7 @@ lab.experiment('index', function() {
     event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
     event.Records[0].s3.bucket.name = 'source-bucket';
 
-    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg')); // eslint-disable-line no-sync
     sinon.stub(s3, 'getObjectAsync', function() {
       return Promise.resolve({
         Body: originalImage,
@@ -264,7 +260,7 @@ lab.experiment('index', function() {
     event.Records[0].s3.object.key = 'some/path/not/fail/type/file.jpg';
     event.Records[0].s3.bucket.name = 'source-bucket';
 
-    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
+    var originalImage = fs.readFileSync(path.join(__dirname, './fixtures/66pix.jpg')); // eslint-disable-line no-sync
     sinon.stub(s3, 'getObjectAsync', function() {
       return Promise.resolve({
         Body: originalImage,

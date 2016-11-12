@@ -6,8 +6,7 @@ var lab = exports.lab = Lab.script();
 var expect = Code.expect;
 var fs = require('fs');
 var path = require('path');
-var imagemagick = require('imagemagick');
-var sinon = require('sinon');
+var sharp = require('sharp');
 
 lab.experiment('process image', function() {
 
@@ -16,8 +15,8 @@ lab.experiment('process image', function() {
   var imageProcessor;
   lab.before(function(done) {
     imageProcessor = require('../../functions/image-processor.js');
-    originalJpgImage = fs.readFileSync(path.join(__dirname, '../fixtures/66pix.jpg'), 'binary'); // eslint-disable-line no-sync
-    originalPngImage = fs.readFileSync(path.join(__dirname, '../fixtures/66pix.png'), 'binary'); // eslint-disable-line no-sync
+    originalJpgImage = fs.readFileSync(path.join(__dirname, '../fixtures/66pix.jpg')); // eslint-disable-line no-sync
+    originalPngImage = fs.readFileSync(path.join(__dirname, '../fixtures/66pix.png')); // eslint-disable-line no-sync
     done();
   });
 
@@ -42,11 +41,10 @@ lab.experiment('process image', function() {
     .then(function(resizedImage) {
       var destinationPath = path.resolve(__dirname, '../fixtures/resized.png');
       fs.writeFileSync(destinationPath, resizedImage.data, 'binary'); // eslint-disable-line no-sync
-      imagemagick.identify(['-format', '%w', destinationPath], function(error, out) {
-        if (error) {
-          return done(error);
-        }
-        expect(parseInt(out, 10)).to.equal(88);
+      sharp(destinationPath)
+      .metadata()
+      .then(function(metadata) {
+        expect(parseInt(metadata.width, 10)).to.equal(88);
         fs.unlinkSync(destinationPath); // eslint-disable-line no-sync
         return done();
       });
@@ -86,11 +84,10 @@ lab.experiment('process image', function() {
     .then(function(resizedImage) {
       var destinationPath = path.resolve(__dirname, '../fixtures/resized.jpg');
       fs.writeFileSync(destinationPath, resizedImage.data, 'binary'); // eslint-disable-line no-sync
-      imagemagick.identify(['-format', '%w', destinationPath], function(error, out) {
-        if (error) {
-          return done(error);
-        }
-        expect(parseInt(out, 10)).to.equal(88);
+      sharp(destinationPath)
+      .metadata()
+      .then(function(metadata) {
+        expect(parseInt(metadata.width, 10)).to.equal(88);
         fs.unlinkSync(destinationPath); // eslint-disable-line no-sync
         return done();
       });
@@ -98,33 +95,13 @@ lab.experiment('process image', function() {
   });
 
   lab.test('should reject with the error', function(done) {
-    sinon.stub(imagemagick, 'resize', function(params, callback) {
-      callback('this is err');
-    });
     imageProcessor({
-      data: originalJpgImage,
+      data: new Buffer('not an image'),
       type: 'image/jpg',
       key: '/this/is/the/file.jpg'
     })(88)
     .catch(function(error) {
-      imagemagick.resize.restore();
-      expect(error).to.equal('imagemagick error: this is err');
-      done();
-    });
-  });
-
-  lab.test('should reject with the stderr', function(done) {
-    sinon.stub(imagemagick, 'resize', function(params, callback) {
-      callback(null, null, 'this is stderr');
-    });
-    imageProcessor({
-      data: originalJpgImage,
-      type: 'image/jpg',
-      key: '/this/is/the/file.jpg'
-    })(88)
-    .catch(function(error) {
-      imagemagick.resize.restore();
-      expect(error).to.equal('imagemagick error: this is stderr');
+      expect(error.message).to.equal('Input buffer contains unsupported image format');
       done();
     });
   });
