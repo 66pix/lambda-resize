@@ -12,21 +12,21 @@
   "author": "Michael Robinson <michael.robinson@66pix.com>",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.2.33",
-    "bluebird": "^3.1.5",
-    "filename.js": "^1.0.11",
-    "nsp": "^2.4.0",
-    "ramda": "^0.19.1",
-    "raven": "*",
-    "sharp": "0.15.1"
+    "aws-sdk": "^2.7.0",
+    "bluebird": "^3.4.6",
+    "filename.js": "^1.0.17",
+    "nsp": "^2.6.2",
+    "ramda": "^0.22.1",
+    "raven": "^0.12.1",
+    "sharp": "0.16.2"
   },
   "devDependencies": {
-    "code": "^1.0.0",
+    "code": "^4.0.0",
     "coverage-average": "^1.0.4",
-    "eslint": "^1.10.3",
-    "lab": "^6.0.0",
-    "node-lambda": "0.8.3",
-    "sinon": "^1.17.3"
+    "eslint": "^3.10.0",
+    "lab": "^11.2.1",
+    "node-lambda": "0.8.11",
+    "sinon": "^1.17.6"
   },
   "lambci": {
     "docker": {
