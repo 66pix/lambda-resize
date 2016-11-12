@@ -7,7 +7,7 @@ ln -s /usr/local/lib64/node-v4.3.x/bin/npm /usr/local/bin/npm
 ln -s /usr/local/lib64/node-v4.3.x/bin/node /usr/local/bin/node
 
 npm run nsp
-npm run lint
+#npm run lint
 npm run test
 
 if [ "$LAMBCI_BRANCH" != "develop" ] && [ "$LAMBCI_BRANCH" != "master" ]; then
