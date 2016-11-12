@@ -27,7 +27,7 @@ echo "Sizes: $SIZES"
 sed -i "s/SIZES/$SIZES/g" config.json
 
 echo "Creating deploy.env file"
-echo "RAYGUN_API_KEY=$LAMBDA_RESIZE_RAYGUN_API_KEY" >> deploy.env
+echo "SENTRY_DSN=$SENTRY_DSN" >> deploy.env
 
 echo ""
 echo "Deploying to $ENVIRONMENT"
